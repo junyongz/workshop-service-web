@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Truck Parts Tasks - Tablet App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Filter Buttons -->
+        <div class="filter-section">
+            <button class="filter-btn active" data-filter="all">All Tasks</button>
+            <button class="filter-btn" data-filter="maintenance">Maintenance</button>
+            <button class="filter-btn" data-filter="inspection">Inspection</button>
+            <button class="filter-btn" data-filter="repair">Repair</button>
+            <button class="filter-btn" data-filter="refill">Refill</button>
+        </div>
+
+        <!-- Main Content: Categories and Sidebar -->
+        <div class="main-content">
+            <div class="categories">
+                <div class="category-box" data-part="engine">
+                    <div class="category-header">
+                        <div class="image-placeholder">Engine Image Placeholder</div>
+                        <div class="category-title">
+                            <h2>Engine</h2>
+                            <span class="category-badge">0</span>
+                        </div>
+                    </div>
+                    <div class="tasks">
+                        <div class="task-box" data-type="maintenance" data-price="35">
+                            <div class="task-image-placeholder">Task Image</div>
+                            <span>Check Oil Level</span>
+                            <div class="price-tooltip">$20 - $50</div>
+                        </div>
+                        <div class="task-box" data-type="inspection" data-price="22.5">
+                            <div class="task-image-placeholder">Task Image</div>
+                            <span>Inspect Belts</span>
+                            <div class="price-tooltip">$15 - $30</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="category-box" data-part="fuel">
+                    <div class="category-header">
+                        <div class="image-placeholder">Fuel System Image Placeholder</div>
+                        <div class="category-title">
+                            <h2>Fuel System</h2>
+                            <span class="category-badge">0</span>
+                        </div>
+                    </div>
+                    <div class="tasks">
+                        <div class="task-box" data-type="maintenance" data-price="17.5">
+                            <div class="task-image-placeholder">Task Image</div>
+                            <span>Refill Tank</span>
+                            <div class="price-tooltip">$10 - $25</div>
+                        </div>
+                        <div class="task-box" data-type="repair" data-price="75">
+                            <div class="task-image-placeholder">Task Image</div>
+                            <span>Replace Filter</span>
+                            <div class="price-tooltip">$50 - $100</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="category-box" data-part="refill">
+                    <div class="category-header">
+                        <div class="image-placeholder">Refill Image Placeholder</div>
+                        <div class="category-title">
+                            <h2>Refill</h2>
+                            <span class="category-badge">0</span>
+                        </div>
+                    </div>
+                    <div class="tasks">
+                        <div class="task-box" data-type="refill" data-price="5" data-unit="litres">
+                            <div class="task-image-placeholder">Task Image</div>
+                            <span>Refill Engine Oil</span>
+                            <div class="price-tooltip">$5 per litre</div>
+                        </div>
+                        <div class="task-box" data-type="refill" data-price="10" data-unit="litres">
+                            <div class="task-image-placeholder">Task Image</div>
+                            <span>Refill Gear Oil</span>
+                            <div class="price-tooltip">$10 per litre</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="sidebar-header">
+                    <div class="vehicle-input">
+                        <label for="vehicle-number">Vehicle No:</label>
+                        <input type="text" id="vehicle-number" placeholder="Enter vehicle number">
+                    </div>
+                    <div class="header-row">
+                        <h3>Selected Tasks</h3>
+                        <div class="top-total">
+                            <span>Total: </span>
+                            <span class="top-total-amount">$0.00</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="task-list">
+                    <!-- Dynamically added tasks go here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

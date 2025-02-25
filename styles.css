@@ -1,0 +1,414 @@
+/* styles.css */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f0f0f0;
+    height: 100vh; /* Ensure full viewport height for body */
+    overflow: auto; /* Allow page-level scrolling for the entire body */
+}
+
+.app-container {
+    max-width: 1024px;
+    margin: 20px auto;
+    padding: 0; /* Remove padding to prevent extra height */
+}
+
+/* Filter Section */
+.filter-section {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding: 0 10px; /* Add horizontal padding for alignment */
+}
+
+.filter-btn {
+    padding: 10px 20px;
+    border: none;
+    background: #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.filter-btn.active, .filter-btn:hover {
+    background: #007bff;
+    color: white;
+}
+
+/* Main Content */
+.main-content {
+    display: flex;
+    gap: 20px;
+    padding: 0 10px; /* Add horizontal padding for alignment */
+    flex: auto; /* Allow it to grow naturally within the page */
+    overflow: visible; /* Remove internal scrolling, rely on body scroll */
+}
+
+/* Categories */
+.categories {
+    flex: 2;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px 20px; /* 20px vertical and horizontal gap, as per your adjustment */
+    margin: 0; /* Remove any inherited margins */
+    padding: 0; /* Remove any padding */
+    align-content: start; /* Ensure content starts at the top, no extra spacing */
+}
+
+/* Category Boxes */
+.category-box {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Reduced shadow to minimize visual gap */
+    padding: 15px;
+    margin: 0; /* No margins */
+    height: fit-content; /* Only as tall as content */
+    display: flex;
+    flex-direction: column; /* Ensure content stacks tightly */
+}
+
+/* Category Header */
+.category-header {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin: 0 0 15px 0; /* Only bottom margin for spacing within box */
+    padding: 0; /* No padding */
+    width: 100%; /* Ensure full width */
+}
+
+/* Category Title and Badge */
+.category-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.image-placeholder {
+    width: 100px;
+    height: 100px;
+    background: #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 14px;
+    color: #666;
+    border-radius: 5px;
+    margin: 0; /* No margins */
+}
+
+h2 {
+    margin: 0;
+    font-size: 20px;
+    text-align: right;
+}
+
+.category-badge {
+    background: #007bff;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* Tasks */
+.tasks {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
+    margin: 0; /* No margins */
+    padding: 0; /* No padding */
+    width: 100%; /* Ensure full width */
+}
+
+/* Task Boxes */
+.task-box {
+    position: relative;
+    background: #f9f9f9;
+    border-radius: 5px;
+    padding: 10px;
+    text-align: center;
+    font-size: 14px;
+    cursor: pointer;
+    transition: transform 0.2s;
+    margin: 0; /* No margins */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative; /* For positioning the remove icon */
+}
+
+.task-box:hover {
+    transform: scale(1.05);
+}
+
+.task-box.selected {
+    background: #e0f0ff;
+    border: 2px solid #007bff;
+}
+
+/* Task Remove Icon */
+.task-remove {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 16px;
+    height: 16px;
+    background: #ff4d4d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    display: none; /* Hidden by default, shown when selected */
+}
+
+.task-remove svg {
+    width: 10px;
+    height: 10px;
+    stroke: white; /* White stroke for cross */
+    fill: none; /* No fill, only stroke */
+}
+
+.task-box.selected .task-remove {
+    display: flex;
+}
+
+/* Task Image Placeholder */
+.task-image-placeholder {
+    width: 80px;
+    height: 80px;
+    background: #ddd;
+    margin: 0 auto 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: #666;
+    border-radius: 5px;
+}
+
+/* Price Tooltip */
+.price-tooltip {
+    display: none;
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 3px;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.task-box:hover .price-tooltip {
+    display: block;
+}
+
+.task-box.hidden {
+    display: none;
+}
+
+/* Sidebar */
+.sidebar {
+    flex: 1;
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    height: auto; /* Allow natural height growth */
+    display: flex;
+    flex-direction: column;
+    min-width: 0; /* Prevent flex items from growing beyond container */
+    position: relative; /* Provide context for sticky positioning */
+    z-index: 50; /* Increase z-index for sidebar to manage stacking context */
+}
+
+/* Sidebar Header */
+.sidebar-header {
+    position: sticky;
+    top: 0; /* Stick at the very top, removing the 20px offset to fully occupy the area */
+    background: #ffffff; /* Pure white for full opacity */
+    z-index: 2000; /* Significantly increased z-index to ensure it stays above all content */
+    padding: 15px 0; /* Use padding instead of margin for internal spacing, no external margins */
+    border-bottom: 2px solid #007bff; /* Bold blue border for standout */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Enhanced shadow for prominence */
+    margin: 0; /* Remove all margins to occupy the area fully */
+    width: 100%; /* Ensure full width of sidebar */
+}
+
+/* Vehicle Input */
+.vehicle-input {
+    margin-bottom: 10px; /* Reduced margin for tighter spacing within header */
+    display: flex;
+    align-items: center; /* Align label and input horizontally */
+    gap: 10px; /* Space between label and input */
+    padding: 0 0 5px; /* Add slight padding for alignment within header */
+}
+
+.vehicle-input label {
+    font-size: 16px;
+    margin-right: 0; /* Remove extra spacing */
+}
+
+#vehicle-number {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    width: 200px;
+    flex: 1; /* Allow input to grow but not exceed 200px */
+}
+
+/* Header Row */
+.header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0; /* Remove margin to fit tightly within header */
+    padding: 0 0 5px; /* Add slight padding for alignment within header */
+    width: 100%; /* Ensure full width */
+}
+
+.selected-tasks h3 {
+    margin: 0;
+    font-size: 18px;
+    flex: 1; /* Allow h3 to take available space */
+}
+
+.top-total {
+    font-size: 16px;
+    font-weight: bold;
+    display: flex;
+    align-items: center; /* Align total with h3 */
+    gap: 5px; /* Small gap between "Total:" and amount */
+}
+
+.top-total-amount {
+    color: #007bff;
+}
+
+/* Task List */
+.task-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1; /* Allows it to expand within sidebar */
+    width: 100%; /* Ensure full width to prevent horizontal scrolling */
+    box-sizing: border-box; /* Include padding in width calculation */
+    overflow: visible; /* Allow content to grow naturally, no scrolling */
+    padding-top: 0; /* Remove padding-top to avoid extra space with sticky header */
+    margin-top: 0; /* Remove margin to ensure no gap with header */
+    z-index: 1; /* Lower z-index to ensure it stays below sidebar-header */
+}
+
+/* Selected Task Item */
+.selected-task-item {
+    background: #f9f9f9;
+    border-radius: 5px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%; /* Ensure full width within task-list */
+    box-sizing: border-box; /* Include padding in width */
+    min-width: 0; /* Prevent flex items from growing beyond container */
+    z-index: 0; /* Ensure it stays below sidebar-header */
+}
+
+/* Task Header */
+.task-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    justify-content: space-between;
+    width: 100%; /* Ensure full width */
+    min-width: 0; /* Prevent flex items from growing beyond container */
+}
+
+.task-header span {
+    font-size: 14px; /* Reduced to prevent overflow */
+    font-weight: bold; /* Keep bold for emphasis */
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1); /* Subtle shadow for emphasis */
+    flex: 1; /* Takes remaining space */
+    overflow: hidden; /* Prevent overflow */
+    text-overflow: ellipsis; /* Truncate long text with ellipsis */
+    white-space: nowrap; /* Keep text on one line for truncation */
+    max-width: 100%; /* Limit width to prevent overflow */
+}
+
+/* Job Input */
+.job-input {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0; /* Prevent flex items from growing beyond container */
+}
+
+.job-input label {
+    font-size: 14px;
+}
+
+.job-input input {
+    width: 60px;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+/* Remove Button */
+.remove-btn {
+    background: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 5px;
+    border-radius: 3px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    min-width: 0; /* Prevent flex items from growing beyond container */
+}
+
+/* Remove Button SVG */
+.remove-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* Subtotal */
+.subtotal {
+    font-size: 14px;
+    text-align: right;
+}
+
+/* Task Remarks */
+.task-remarks {
+    margin-top: 5px;
+}
+
+.task-remarks textarea {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 12px;
+    resize: none;
+    height: 50px;
+    box-sizing: border-box; /* Include padding in width */
+    min-width: 0; /* Prevent flex items from growing beyond container */
+}
