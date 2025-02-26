@@ -16,12 +16,12 @@ body {
 
 /* Filter Section */
 .filter-section {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 20px;
-    padding: 0 10px; /* Add horizontal padding for alignment */
-}
+    display: flex; /* Use flex for alignment */
+    justify-content: flex-start; /* Left-align the buttons */
+    gap: 10px; /* Maintain spacing between buttons */
+    margin-bottom: 20px; /* Keep spacing below */
+    padding: 0 10px; /* Keep horizontal padding for alignment */
+  }
 
 .filter-btn {
     padding: 10px 20px;
@@ -120,6 +120,10 @@ h2 {
     font-weight: bold;
 }
 
+.category-badge-grey { 
+    background: #808080; 
+}
+
 /* Tasks */
 .tasks {
     display: grid;
@@ -169,14 +173,20 @@ h2 {
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    border: none;
+    padding: 0;
     display: none; /* Hidden by default, shown when selected */
 }
-
+  
 .task-remove svg {
     width: 10px;
     height: 10px;
-    stroke: white; /* White stroke for cross */
+    stroke: white; /* Ensure white stroke for the cross */
     fill: none; /* No fill, only stroke */
+}
+  
+.task-box.selected .task-remove {
+    display: flex; /* Show the button when the task is selected */
 }
 
 .task-box.selected .task-remove {
@@ -225,7 +235,7 @@ h2 {
     flex: 1;
     background: white;
     border-radius: 10px;
-    padding: 20px;
+    padding: 20px; /* Maintain padding for consistent spacing */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     height: auto; /* Allow natural height growth */
     display: flex;
@@ -233,28 +243,32 @@ h2 {
     min-width: 0; /* Prevent flex items from growing beyond container */
     position: relative; /* Provide context for sticky positioning */
     z-index: 50; /* Increase z-index for sidebar to manage stacking context */
+    width: 100%; /* Ensure full width of sidebar */
+    box-sizing: border-box; /* Include padding in width calculation */
 }
 
 /* Sidebar Header */
 .sidebar-header {
     position: sticky;
-    top: 0; /* Stick at the very top, removing the 20px offset to fully occupy the area */
+    top: 0; /* Stick at the very top, occupying the full width */
     background: #ffffff; /* Pure white for full opacity */
     z-index: 2000; /* Significantly increased z-index to ensure it stays above all content */
-    padding: 15px 0; /* Use padding instead of margin for internal spacing, no external margins */
+    padding: 20px; /* Use full padding to match desired width, extending beyond sidebar padding */
     border-bottom: 2px solid #007bff; /* Bold blue border for standout */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Enhanced shadow for prominence */
-    margin: 0; /* Remove all margins to occupy the area fully */
-    width: 100%; /* Ensure full width of sidebar */
+    margin: -20px -20px 0 -20px; /* Negative margin to extend beyond sidebar padding, matching outer width */
+    width: calc(100% + 40px); /* Ensure full width of sidebar, accounting for padding */
+    box-sizing: border-box; /* Use border-box to include padding and margin in width calculation */
 }
 
 /* Vehicle Input */
 .vehicle-input {
-    margin-bottom: 10px; /* Reduced margin for tighter spacing within header */
+    margin-bottom: 15px; /* Maintain spacing within header */
     display: flex;
     align-items: center; /* Align label and input horizontally */
     gap: 10px; /* Space between label and input */
-    padding: 0 0 5px; /* Add slight padding for alignment within header */
+    padding: 0; /* Remove padding to fit within header padding */
+    width: 100%; /* Ensure full width within sidebar-header */
 }
 
 .vehicle-input label {
@@ -267,8 +281,9 @@ h2 {
     border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 14px;
-    width: 200px;
-    flex: 1; /* Allow input to grow but not exceed 200px */
+    width: 100%; /* Use full width within vehicle-input, respecting flex */
+    max-width: 200px; /* Cap width to prevent excessive growth */
+    flex: 1; /* Allow input to grow but not exceed max-width */
 }
 
 /* Header Row */
@@ -277,7 +292,7 @@ h2 {
     justify-content: space-between;
     align-items: center;
     margin: 0; /* Remove margin to fit tightly within header */
-    padding: 0 0 5px; /* Add slight padding for alignment within header */
+    padding: 0; /* Remove padding to fit within header padding */
     width: 100%; /* Ensure full width */
 }
 
@@ -308,7 +323,6 @@ h2 {
     width: 100%; /* Ensure full width to prevent horizontal scrolling */
     box-sizing: border-box; /* Include padding in width calculation */
     overflow: visible; /* Allow content to grow naturally, no scrolling */
-    padding-top: 0; /* Remove padding-top to avoid extra space with sticky header */
     margin-top: 0; /* Remove margin to ensure no gap with header */
     z-index: 1; /* Lower z-index to ensure it stays below sidebar-header */
 }
@@ -344,7 +358,6 @@ h2 {
     flex: 1; /* Takes remaining space */
     overflow: hidden; /* Prevent overflow */
     text-overflow: ellipsis; /* Truncate long text with ellipsis */
-    white-space: nowrap; /* Keep text on one line for truncation */
     max-width: 100%; /* Limit width to prevent overflow */
 }
 
@@ -411,4 +424,55 @@ h2 {
     height: 50px;
     box-sizing: border-box; /* Include padding in width */
     min-width: 0; /* Prevent flex items from growing beyond container */
+}
+
+/* Table Styling */
+table {
+    width: 100%; /* Full width of its container */
+    border-collapse: collapse; /* Remove gaps between borders */
+    background: white; /* Matches your white backgrounds */
+    border-radius: 10px; /* Consistent with your box styling */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Subtle shadow like category-box */
+    overflow: hidden; /* Ensure rounded corners clip content */
+    font-size: 14px; /* Matches task-box and other elements */
+    margin: 0; /* No extra margins */
+}
+
+thead {
+    background: #007bff; /* Blue header to match active buttons */
+    color: white; /* White text for contrast */
+}
+
+th {
+    padding: 12px 15px; /* Comfortable padding */
+    text-align: left; /* Left-aligned headers for readability */
+    font-weight: bold; /* Emphasize headers */
+}
+
+tbody tr {
+    border-bottom: 1px solid #ddd; /* Light separator line */
+    transition: background 0.2s; /* Smooth hover effect */
+}
+
+tbody tr:hover {
+    background: #f0f7ff; /* Light blue hover effect */
+}
+
+td {
+    padding: 12px 15px; /* Consistent padding with th */
+    vertical-align: middle; /* Center content vertically */
+}
+
+tbody tr:last-child {
+    border-bottom: none; /* Remove border on last row */
+}
+
+/* Optional: Responsive adjustments */
+@media (max-width: 768px) {
+    table {
+        font-size: 12px; /* Slightly smaller on mobile */
+    }
+    th, td {
+        padding: 8px 10px; /* Reduced padding for smaller screens */
+    }
 }

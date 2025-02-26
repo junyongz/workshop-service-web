@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Truck Parts Tasks - React 19 App</title>
+    <link rel="stylesheet" href="styles.css">
+    <script type="module">
+        // Import React and ReactDOM as ESM and expose them globally, ensuring createRoot is included
+        import React from 'https://esm.sh/react@19';
+        import ReactDOM from 'https://esm.sh/react-dom@19/client'; // Import from /client for createRoot
+        window.React = React;
+        window.ReactDOM = ReactDOM;
+    </script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel" src="App.js"></script>
+</body>
+</html>
