@@ -1,27 +1,37 @@
-/* styles.css */
+/* styles.css (existing content remains, new classes added at the end) */
+
+/* Existing styles (unchanged except where new classes are integrated) */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
     background: #f0f0f0;
-    height: 100vh; /* Ensure full viewport height for body */
-    overflow: auto; /* Allow page-level scrolling for the entire body */
+    height: 100vh;
+    overflow: auto;
 }
 
 .app-container {
     max-width: 1024px;
     margin: 20px auto;
-    padding: 0; /* Remove padding to prevent extra height */
+    padding: 0;
 }
 
 /* Filter Section */
 .filter-section {
-    display: flex; /* Use flex for alignment */
-    justify-content: flex-start; /* Left-align the buttons */
-    gap: 10px; /* Maintain spacing between buttons */
-    margin-bottom: 20px; /* Keep spacing below */
-    padding: 0 10px; /* Keep horizontal padding for alignment */
-  }
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding: 0 10px;
+}
+
+.filter-section-loading {
+    opacity: 0.5;
+}
+
+.filter-section-loading span {
+    margin-right: 10px;
+}
 
 .filter-btn {
     padding: 10px 20px;
@@ -41,9 +51,9 @@ body {
 .main-content {
     display: flex;
     gap: 20px;
-    padding: 0 10px; /* Add horizontal padding for alignment */
-    flex: auto; /* Allow it to grow naturally within the page */
-    overflow: visible; /* Remove internal scrolling, rely on body scroll */
+    padding: 0 10px;
+    flex: auto;
+    overflow: visible;
 }
 
 /* Categories */
@@ -51,22 +61,22 @@ body {
     flex: 2;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px 20px; /* 20px vertical and horizontal gap, as per your adjustment */
-    margin: 0; /* Remove any inherited margins */
-    padding: 0; /* Remove any padding */
-    align-content: start; /* Ensure content starts at the top, no extra spacing */
+    gap: 20px 20px;
+    margin: 0;
+    padding: 0;
+    align-content: start;
 }
 
 /* Category Boxes */
 .category-box {
     background: white;
     border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Reduced shadow to minimize visual gap */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     padding: 15px;
-    margin: 0; /* No margins */
-    height: fit-content; /* Only as tall as content */
+    margin: 0;
+    height: fit-content;
     display: flex;
-    flex-direction: column; /* Ensure content stacks tightly */
+    flex-direction: column;
 }
 
 /* Category Header */
@@ -75,9 +85,9 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin: 0 0 15px 0; /* Only bottom margin for spacing within box */
-    padding: 0; /* No padding */
-    width: 100%; /* Ensure full width */
+    margin: 0 0 15px 0;
+    padding: 0;
+    width: 100%;
 }
 
 /* Category Title and Badge */
@@ -88,8 +98,8 @@ body {
 }
 
 .image-placeholder {
-    width: 100px;
-    height: 100px;
+    max-width: 100%;
+    max-height: 100px;
     background: #ccc;
     display: flex;
     align-items: center;
@@ -98,7 +108,14 @@ body {
     font-size: 14px;
     color: #666;
     border-radius: 5px;
-    margin: 0; /* No margins */
+    margin: 0;
+    overflow: hidden;
+}
+
+.image-placeholder img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
 }
 
 h2 {
@@ -129,9 +146,9 @@ h2 {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 10px;
-    margin: 0; /* No margins */
-    padding: 0; /* No padding */
-    width: 100%; /* Ensure full width */
+    margin: 0;
+    padding: 0;
+    width: 100%;
 }
 
 /* Task Boxes */
@@ -144,11 +161,11 @@ h2 {
     font-size: 14px;
     cursor: pointer;
     transition: transform 0.2s;
-    margin: 0; /* No margins */
+    margin: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    position: relative; /* For positioning the remove icon */
+    position: relative;
 }
 
 .task-box:hover {
@@ -175,28 +192,24 @@ h2 {
     cursor: pointer;
     border: none;
     padding: 0;
-    display: none; /* Hidden by default, shown when selected */
+    display: none;
 }
   
 .task-remove svg {
     width: 10px;
     height: 10px;
-    stroke: white; /* Ensure white stroke for the cross */
-    fill: none; /* No fill, only stroke */
+    stroke: white;
+    fill: none;
 }
   
-.task-box.selected .task-remove {
-    display: flex; /* Show the button when the task is selected */
-}
-
 .task-box.selected .task-remove {
     display: flex;
 }
 
 /* Task Image Placeholder */
 .task-image-placeholder {
-    width: 80px;
-    height: 80px;
+    max-width: 100%;
+    max-height: 60px;
     background: #ddd;
     margin: 0 auto 10px;
     display: flex;
@@ -205,6 +218,13 @@ h2 {
     font-size: 12px;
     color: #666;
     border-radius: 5px;
+    overflow: hidden;
+}
+
+.task-image-placeholder img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
 }
 
 /* Price Tooltip */
@@ -235,45 +255,45 @@ h2 {
     flex: 1;
     background: white;
     border-radius: 10px;
-    padding: 20px; /* Maintain padding for consistent spacing */
+    padding: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    height: auto; /* Allow natural height growth */
+    height: auto;
     display: flex;
     flex-direction: column;
-    min-width: 0; /* Prevent flex items from growing beyond container */
-    position: relative; /* Provide context for sticky positioning */
-    z-index: 50; /* Increase z-index for sidebar to manage stacking context */
-    width: 100%; /* Ensure full width of sidebar */
-    box-sizing: border-box; /* Include padding in width calculation */
+    min-width: 0;
+    position: relative;
+    z-index: 50;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* Sidebar Header */
 .sidebar-header {
     position: sticky;
-    top: 0; /* Stick at the very top, occupying the full width */
-    background: #ffffff; /* Pure white for full opacity */
-    z-index: 2000; /* Significantly increased z-index to ensure it stays above all content */
-    padding: 20px; /* Use full padding to match desired width, extending beyond sidebar padding */
-    border-bottom: 2px solid #007bff; /* Bold blue border for standout */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Enhanced shadow for prominence */
-    margin: -20px -20px 0 -20px; /* Negative margin to extend beyond sidebar padding, matching outer width */
-    width: calc(100% + 40px); /* Ensure full width of sidebar, accounting for padding */
-    box-sizing: border-box; /* Use border-box to include padding and margin in width calculation */
+    top: 0;
+    background: #ffffff;
+    z-index: 2000;
+    padding: 20px;
+    border-bottom: 2px solid #007bff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    margin: -20px -20px 0 -20px;
+    width: calc(100% + 40px);
+    box-sizing: border-box;
 }
 
 /* Vehicle Input */
 .vehicle-input {
-    margin-bottom: 15px; /* Maintain spacing within header */
+    margin-bottom: 15px;
     display: flex;
-    align-items: center; /* Align label and input horizontally */
-    gap: 10px; /* Space between label and input */
-    padding: 0; /* Remove padding to fit within header padding */
-    width: 100%; /* Ensure full width within sidebar-header */
+    align-items: center;
+    gap: 10px;
+    padding: 0;
+    width: 100%;
 }
 
 .vehicle-input label {
     font-size: 16px;
-    margin-right: 0; /* Remove extra spacing */
+    margin-right: 0;
 }
 
 #vehicle-number {
@@ -281,9 +301,9 @@ h2 {
     border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 14px;
-    width: 100%; /* Use full width within vehicle-input, respecting flex */
-    max-width: 200px; /* Cap width to prevent excessive growth */
-    flex: 1; /* Allow input to grow but not exceed max-width */
+    width: 100%;
+    max-width: 200px;
+    flex: 1;
 }
 
 /* Header Row */
@@ -291,23 +311,23 @@ h2 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 0; /* Remove margin to fit tightly within header */
-    padding: 0; /* Remove padding to fit within header padding */
-    width: 100%; /* Ensure full width */
+    margin: 0;
+    padding: 0;
+    width: 100%;
 }
 
 .selected-tasks h3 {
     margin: 0;
     font-size: 18px;
-    flex: 1; /* Allow h3 to take available space */
+    flex: 1;
 }
 
 .top-total {
     font-size: 16px;
     font-weight: bold;
     display: flex;
-    align-items: center; /* Align total with h3 */
-    gap: 5px; /* Small gap between "Total:" and amount */
+    align-items: center;
+    gap: 5px;
 }
 
 .top-total-amount {
@@ -319,12 +339,12 @@ h2 {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    flex: 1; /* Allows it to expand within sidebar */
-    width: 100%; /* Ensure full width to prevent horizontal scrolling */
-    box-sizing: border-box; /* Include padding in width calculation */
-    overflow: visible; /* Allow content to grow naturally, no scrolling */
-    margin-top: 0; /* Remove margin to ensure no gap with header */
-    z-index: 1; /* Lower z-index to ensure it stays below sidebar-header */
+    flex: 1;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: visible;
+    margin-top: 0;
+    z-index: 1;
 }
 
 /* Selected Task Item */
@@ -335,10 +355,10 @@ h2 {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    width: 100%; /* Ensure full width within task-list */
-    box-sizing: border-box; /* Include padding in width */
-    min-width: 0; /* Prevent flex items from growing beyond container */
-    z-index: 0; /* Ensure it stays below sidebar-header */
+    width: 100%;
+    box-sizing: border-box;
+    min-width: 0;
+    z-index: 0;
 }
 
 /* Task Header */
@@ -347,18 +367,18 @@ h2 {
     align-items: center;
     gap: 15px;
     justify-content: space-between;
-    width: 100%; /* Ensure full width */
-    min-width: 0; /* Prevent flex items from growing beyond container */
+    width: 100%;
+    min-width: 0;
 }
 
 .task-header span {
-    font-size: 14px; /* Reduced to prevent overflow */
-    font-weight: bold; /* Keep bold for emphasis */
-    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1); /* Subtle shadow for emphasis */
-    flex: 1; /* Takes remaining space */
-    overflow: hidden; /* Prevent overflow */
-    text-overflow: ellipsis; /* Truncate long text with ellipsis */
-    max-width: 100%; /* Limit width to prevent overflow */
+    font-size: 14px;
+    font-weight: bold;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
 }
 
 /* Job Input */
@@ -366,7 +386,7 @@ h2 {
     display: flex;
     align-items: center;
     gap: 10px;
-    min-width: 0; /* Prevent flex items from growing beyond container */
+    min-width: 0;
 }
 
 .job-input label {
@@ -394,7 +414,7 @@ h2 {
     justify-content: center;
     width: 24px;
     height: 24px;
-    min-width: 0; /* Prevent flex items from growing beyond container */
+    min-width: 0;
 }
 
 /* Remove Button SVG */
@@ -422,57 +442,158 @@ h2 {
     font-size: 12px;
     resize: none;
     height: 50px;
-    box-sizing: border-box; /* Include padding in width */
-    min-width: 0; /* Prevent flex items from growing beyond container */
+    box-sizing: border-box;
+    min-width: 0;
 }
 
 /* Table Styling */
 table {
-    width: 100%; /* Full width of its container */
-    border-collapse: collapse; /* Remove gaps between borders */
-    background: white; /* Matches your white backgrounds */
-    border-radius: 10px; /* Consistent with your box styling */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Subtle shadow like category-box */
-    overflow: hidden; /* Ensure rounded corners clip content */
-    font-size: 14px; /* Matches task-box and other elements */
-    margin: 0; /* No extra margins */
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    font-size: 14px;
+    margin: 0;
 }
 
 thead {
-    background: #007bff; /* Blue header to match active buttons */
-    color: white; /* White text for contrast */
+    background: #007bff;
+    color: white;
 }
 
 th {
-    padding: 12px 15px; /* Comfortable padding */
-    text-align: left; /* Left-aligned headers for readability */
-    font-weight: bold; /* Emphasize headers */
+    padding: 12px 15px;
+    text-align: left;
+    font-weight: bold;
 }
 
 tbody tr {
-    border-bottom: 1px solid #ddd; /* Light separator line */
-    transition: background 0.2s; /* Smooth hover effect */
+    border-bottom: 1px solid #ddd;
+    transition: background 0.2s;
 }
 
 tbody tr:hover {
-    background: #f0f7ff; /* Light blue hover effect */
+    background: #f0f7ff;
 }
 
 td {
-    padding: 12px 15px; /* Consistent padding with th */
-    vertical-align: middle; /* Center content vertically */
+    padding: 12px 15px;
+    vertical-align: middle;
 }
 
 tbody tr:last-child {
-    border-bottom: none; /* Remove border on last row */
+    border-bottom: none;
 }
 
 /* Optional: Responsive adjustments */
 @media (max-width: 768px) {
     table {
-        font-size: 12px; /* Slightly smaller on mobile */
+        font-size: 12px;
     }
     th, td {
-        padding: 8px 10px; /* Reduced padding for smaller screens */
+        padding: 8px 10px;
     }
+}
+
+/* New Styles for Inline Replacements */
+
+/* ServiceEntry Header Layout */
+.service-entry-header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.service-entry-filter {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.service-entry-actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* Buttons */
+.button-primary {
+    padding: 8px 16px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s;
+}
+
+.button-primary:hover {
+    background: #0056b3;
+}
+
+.button-secondary {
+    padding: 8px 16px;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s;
+}
+
+.button-secondary:hover {
+    background: #218838;
+}
+
+/* Table View Wrapper */
+.table-view-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.table-view-info {
+    margin-bottom: 10px;
+}
+
+/* Service List Styles */
+.service-list-add-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 8px 16px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.service-list-title {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.service-list-edit-button {
+    padding: 5px 10px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+/* Add to styles.css */
+.quantity-input {
+    width: 60px; /* Matches the largest width used */
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
 }
