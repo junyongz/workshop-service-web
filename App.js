@@ -38,21 +38,19 @@ const initializeCategoryBadges = (tasksData, selectedTasks) => {
 // Create Context
 const ServiceContext = createContext();
 
-const FilterSection = ({ filter, onFilterChange }) => {
-  return (
-    <div className={'filter-section'}>
-      {getTaskTypes().map(type => (
-        <button
-          key={type}
-          className={`filter-btn ${filter === type ? 'active' : ''}`}
-          onClick={() => onFilterChange(type)}
-        >
-          {type.charAt(0).toUpperCase() + type.slice(1)} Tasks
-        </button>
-      ))}
-    </div>
-  );
-};
+const FilterSection = ({ filter, onFilterChange }) => (
+  <div className="filter-section">
+    {getTaskTypes().map(type => (
+      <button
+        key={type}
+        className={`filter-btn ${filter === type ? 'active' : ''}`}
+        onClick={() => onFilterChange(type)}
+      >
+        {type.charAt(0).toUpperCase() + type.slice(1)} Tasks
+      </button>
+    ))}
+  </div>
+);
 
 const Category = ({ part, filter, selectedTasks, onTaskClick, onRemoveTask, categoryBadges }) => (
   <div className="category-box">
@@ -176,7 +174,7 @@ const Sidebar = ({ vehicleNumber, selectedTasks, onVehicleChange, onRemoveTask, 
         <h3>Selected Tasks</h3>
         <div className="top-total">
           <span>Total: </span>
-          <span className="top-total-amount">${calculateTotal}</span>
+          <span className="top-total-amount">${calculateTotal()}</span>
         </div>
       </div>
     </div>
@@ -226,7 +224,7 @@ const SelectedTaskItem = ({ task, onQuantityChange, onRemarksChange, onRemove })
 );
 
 const ServiceEntry = ({ onSave, onBack }) => {
-    const { filter, selectedTasks, vehicleNumber, categoryBadges, setFilter, setSelectedTasks, setActiveView, handleTaskClick, handleRemoveTask, calculateTotal, setVehicleNumber } = useContext(ServiceContext);
+  const { filter, selectedTasks, vehicleNumber, categoryBadges, setFilter, setSelectedTasks, setActiveView, handleTaskClick, handleRemoveTask, calculateTotal, setVehicleNumber } = useContext(ServiceContext);
 
   const handleQuantityChange = (taskName, newQuantity) => {
     const quantity = parseInt(newQuantity) || 1;
@@ -282,7 +280,7 @@ const ServiceEntry = ({ onSave, onBack }) => {
           onRemoveTask={handleRemoveTask}
           onQuantityChange={handleQuantityChange}
           onRemarksChange={handleRemarksChange}
-          calculateTotal={calculateTotal()}
+          calculateTotal={calculateTotal}
         />
       </div>
     </div>
@@ -290,7 +288,7 @@ const ServiceEntry = ({ onSave, onBack }) => {
 };
 
 const PartsHub = ({ onBack }) => {
-  const { selectedTasks, vehicleNumber, setSelectedTasks, setActiveView, handleQuantityChange, handleRemoveTask, calculateTotal } = useContext(ServiceContext);
+  const { selectedTasks, vehicleNumber, setActiveView, handleQuantityChange, handleRemoveTask, calculateTotal } = useContext(ServiceContext);
 
   return (
     <div className="app-container">
@@ -325,24 +323,24 @@ const ServiceHub = ({ service, onSave, onBack }) => {
     categoryBadges: initializeCategoryBadges(tasksData, service.selectedTasks || []),
     activeView: 'entry',
   };
-      
+
   const [state, dispatch] = useReducer((state, action) => {
     switch (action.type) {
-        case 'SET_SELECTED_TASKS':
+      case 'SET_SELECTED_TASKS':
         return { ...state, selectedTasks: action.payload };
-        case 'SET_VEHICLE_NUMBER':
+      case 'SET_VEHICLE_NUMBER':
         return { ...state, vehicleNumber: action.payload };
-        case 'SET_FILTER':
+      case 'SET_FILTER':
         return { ...state, filter: action.payload };
-        case 'SET_CATEGORY_BADGES':
+      case 'SET_CATEGORY_BADGES':
         return { ...state, categoryBadges: action.payload };
-        case 'SET_ACTIVE_VIEW':
+      case 'SET_ACTIVE_VIEW':
         return { ...state, activeView: action.payload };
-        default:
+      default:
         return state;
     }
   }, initialState);
-      
+
   const { selectedTasks, vehicleNumber, filter, categoryBadges, activeView } = state;
 
   useEffect(() => {
