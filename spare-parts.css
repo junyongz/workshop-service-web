@@ -1,0 +1,175 @@
+.spare-parts-input-area {
+  padding: 15px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+
+.spare-parts-section {
+  margin: 0;
+  padding: 0;
+  background: none;
+  border-radius: 0;
+  box-shadow: none;
+  width: 100%;
+  min-width: 0;
+}
+
+.spare-parts-inputs {
+  display: flex;
+  justify-content: space-between; /* Pushes label left and inputs/buttons right */
+  align-items: center;
+  margin-bottom: 0;
+  padding: 10px 20px; /* Symmetric padding for left and right */
+  background: white;
+  border-radius: 5px;
+  width: 100%;
+  flex-wrap: nowrap;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.spare-parts-label-container {
+  flex-shrink: 0; /* Prevent label container from shrinking */
+  min-width: 120px; /* Ensure label has enough space */
+}
+
+.spare-parts-label {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-right: 15px; /* Spacing before the flex gap takes over */
+  padding-left: 0; /* No padding to ensure leftmost alignment */
+  white-space: nowrap; /* Prevent label text from wrapping */
+}
+
+.spare-parts-inputs-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-shrink: 0; /* Prevent inputs container from shrinking */
+  min-width: 0; /* Allow shrinking if needed, but not fixed */
+}
+
+.quantity-input {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+  width: 200px; /* Enforce enlarged width for name input */
+  flex-shrink: 0; /* Prevent input from shrinking */
+  min-width: 200px; /* Ensure minimum width to prevent shrinking */
+  max-width: 200px; /* Cap at 200px to prevent overflow */
+}
+
+.quantity-input:nth-child(2), /* Quantity input */
+.quantity-input:nth-child(3) { /* Unit Price input */
+  width: 100px; /* Maintain smaller width for quantity and price inputs */
+  flex-shrink: 0; /* Prevent these from shrinking */
+  min-width: 100px; /* Ensure minimum width to prevent shrinking */
+  max-width: 100px; /* Cap at 100px to prevent overflow */
+}
+
+.button-primary {
+  flex-shrink: 0; /* Prevent button from shrinking */
+  padding: 8px 16px; /* Ensure button maintains size */
+  min-width: 60px; /* Minimum width for the button */
+}
+
+.spare-parts-table-section {
+  padding: 15px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  min-width: 0;
+}
+
+.spare-parts-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  font-size: 14px;
+  margin: 0;
+  min-width: 0;
+}
+
+.spare-parts-table thead {
+  background: #28a745;
+  color: white;
+}
+
+.spare-parts-table th {
+  padding: 12px 15px;
+  text-align: left;
+  font-weight: bold;
+}
+
+.spare-parts-table td {
+  padding: 12px 15px;
+  vertical-align: middle;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+.spare-parts-table tr:last-child td {
+  border-bottom: none;
+}
+
+.spare-parts-table th:last-child,
+.spare-parts-table td:last-child {
+  text-align: right;
+  padding-right: 20px;
+}
+
+.spare-parts-table .remove-btn {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 24px;
+  height: 24px;
+}
+
+.spare-parts-table tfoot td {
+  font-weight: bold;
+  text-align: right;
+}
+
+.spare-parts-table tfoot td:first-child {
+  text-align: left;
+  padding-right: 0;
+}
+
+.spare-parts-table tfoot td:nth-child(4) {
+  padding-right: 15px;
+  text-align: right;
+}
+
+.spare-parts-table td:nth-child(4),
+.spare-parts-table th:nth-child(4) {
+  text-align: right;
+}
+
+.spare-parts-badge {
+  background: #28a745;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  margin-left: 10px;
+}

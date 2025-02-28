@@ -1,0 +1,64 @@
+/* layout.css */
+.parts-hub-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 0 10px;
+}
+
+.table-view-wrapper {
+    flex: 2;
+    min-width: 0;
+}
+
+.spare-parts-wrapper {
+    width: 100%;
+    padding: 15px;
+    background: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.main-content {
+    display: flex;
+    gap: 20px;
+    padding: 0 10px;
+    flex: auto;
+    overflow: visible;
+}
+
+.service-entry-header {
+    padding: 10px;
+    background: #f0f0f0;
+    display: flex;
+    justify-content: space-between; /* Distribute space between filters and actions */
+    align-items: center;
+    gap: 10px;
+    width: 100%; /* Ensure full width */
+  }
+  
+  .service-entry-actions {
+    display: flex;
+    gap: 10px;
+  }
+  
+  @media (max-width: 768px) {
+    .service-entry-header {
+      flex-direction: column;
+      align-items: flex-start; /* Stack on mobile, keep filters and actions aligned left */
+    }
+  
+    .filter-section {
+      width: 100%; /* Full width on mobile */
+      justify-content: flex-start; /* Maintain left alignment */
+      margin-bottom: 10px; /* Space between filters and actions on mobile */
+    }
+  
+    .service-entry-actions {
+      width: 100%; /* Full width on mobile */
+      justify-content: flex-end; /* Keep actions right-aligned on mobile */
+    }
+  }

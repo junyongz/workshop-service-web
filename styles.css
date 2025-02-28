@@ -528,11 +528,11 @@ tbody tr:last-child {
     cursor: pointer;
     font-size: 14px;
     transition: background 0.2s;
-}
-
-.button-primary:hover {
+  }
+  
+  .button-primary:hover {
     background: #0056b3;
-}
+  }
 
 .button-secondary {
     padding: 8px 16px;
@@ -589,11 +589,116 @@ tbody tr:last-child {
     font-size: 14px;
 }
 
-/* Add to styles.css */
 .quantity-input {
-    width: 60px; /* Matches the largest width used */
-    padding: 5px;
+    padding: 8px;
     border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 14px;
+    width: 100px; /* Consistent width for inputs */
+}
+
+/* New Styles for Spare Parts Table */
+.spare-parts-tab/* Existing Styles (partial update) */
+.spare-parts-section {
+  margin: 10px 0;
+  padding: 15px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.spare-parts-section h3 {
+  margin: 0 0 10px 0;
+  font-size: 18px;
+}
+
+.spare-parts-inputs {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.spare-parts-table-section {
+  margin-top: 20px;
+  padding: 15px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.spare-parts-table-section h3 {
+  margin: 0 0 10px 0;
+  font-size: 18px;
+}
+
+.spare-parts-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  font-size: 14px;
+  margin: 0;
+}
+
+.spare-parts-table thead {
+  background: #28a745;
+  color: white;
+}
+
+.spare-parts-table th {
+  padding: 12px 15px;
+  text-align: left;
+  font-weight: bold;
+}
+
+.spare-parts-table td {
+  padding: 12px 15px;
+  vertical-align: middle;
+  border-bottom: 1px solid #ddd;
+}
+
+.spare-parts-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* New Styles for Layout */
+.parts-hub-layout {
+  display: flex;
+  gap: 20px;
+  padding: 0 10px;
+}
+
+.table-view-wrapper {
+  flex: 2;
+  min-width: 0;
+}
+
+.spare-parts-container {
+  flex: 1;
+  min-width: 300px; /* Fixed width for spare parts section */
+  max-width: 300px;
+  padding: 15px;
+  background: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  margin: 0 0 20px 20px;
+}
+
+.spare-parts-container h3 {
+  margin: 0 0 15px 0;
+  font-size: 18px;
+  text-align: center;
+  color: #333;
+}
+
+.spare-parts-inputs {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 15px;
+  padding: 10px;
+  background: white;
+  border-radius: 5px;
 }
