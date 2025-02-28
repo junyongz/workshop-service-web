@@ -25,18 +25,87 @@ const getTaskTypes = () => {
   return ['all', ...Array.from(types)];
 };
 
-// Utility function to initialize category badges dynamically
-const initializeCategoryBadges = (tasksData, selectedTasks) => {
+const initializeCategoryBadges = (tasksData, serviceTasks) => {
   const parts = Object.keys(tasksData || {});
   const initialBadges = {};
   parts.forEach(part => {
-    initialBadges[part] = selectedTasks.filter(t => t.part === part).length;
+    initialBadges[part] = serviceTasks.filter(t => t.part === part).length;
   });
   return initialBadges;
 };
 
 // Create Context
 const ServiceContext = createContext();
+
+// WorkshopService Class
+class WorkshopService {
+  constructor(jsonString = '{}') {
+    const data = JSON.parse(jsonString);
+    this.id = data.id || Date.now();
+    this.vehicleNumber = data.vehicleNumber || '';
+    this.serviceTasks = data.serviceTasks || [];
+    this.spareParts = data.spareParts || [];
+    this.createdDate = data.createdDate || new Date().toISOString();
+  }
+
+  static fromJson(jsonString) {
+    return new WorkshopService(jsonString);
+  }
+
+  setVehicleNumber(vehicleNumber) {
+    return new WorkshopService(JSON.stringify({ ...this.toJson(), vehicleNumber }));
+  }
+
+  setServiceTasks(serviceTasks) {
+    return new WorkshopService(JSON.stringify({ ...this.toJson(), serviceTasks }));
+  }
+
+  addTask(task) {
+    const newTasks = [...this.serviceTasks, { ...task, quantity: 1, remarks: '' }];
+    return this.setServiceTasks(newTasks);
+  }
+
+  removeTask(taskName) {
+    const newTasks = this.serviceTasks.filter(task => task.name !== taskName);
+    return this.setServiceTasks(newTasks);
+  }
+
+  setSpareParts(spareParts) {
+    return new WorkshopService(JSON.stringify({ ...this.toJson(), spareParts }));
+  }
+
+  addSparePart(sparePart) {
+    const newSpareParts = [...this.spareParts, sparePart];
+    return this.setSpareParts(newSpareParts);
+  }
+
+  removeSparePart(name) {
+    const newSpareParts = this.spareParts.filter(sp => sp.name !== name);
+    return this.setSpareParts(newSpareParts);
+  }
+
+  toJson() {
+    return {
+      id: this.id,
+      vehicleNumber: this.vehicleNumber,
+      serviceTasks: this.serviceTasks,
+      spareParts: this.spareParts,
+      createdDate: this.createdDate,
+    };
+  }
+
+  calculateTotal() {
+    return this.serviceTasks
+      .reduce((sum, task) => sum + task.price * (task.quantity || 1), 0)
+      .toFixed(2);
+  }
+
+  calculateSparePartsTotal() {
+    return this.spareParts
+      .reduce((sum, sp) => sum + sp.unitPrice * sp.quantity, 0)
+      .toFixed(2);
+  }
+}
 
 const FilterSection = ({ filter, onFilterChange }) => (
   <div className="filter-section">
@@ -52,7 +121,7 @@ const FilterSection = ({ filter, onFilterChange }) => (
   </div>
 );
 
-const Category = ({ part, filter, selectedTasks, onTaskClick, onRemoveTask, categoryBadges }) => (
+const Category = ({ part, filter, serviceTasks, onTaskClick, onRemoveTask, categoryBadges }) => (
   <div className="category-box">
     <div className="category-header">
       <div className="image-placeholder">
@@ -71,7 +140,7 @@ const Category = ({ part, filter, selectedTasks, onTaskClick, onRemoveTask, cate
           key={task.name}
           task={task}
           filter={filter}
-          isSelected={selectedTasks.some(t => t.name === task.name)}
+          isSelected={serviceTasks.some(t => t.name === task.name)}
           onClick={() => onTaskClick(task)}
           onRemove={() => onRemoveTask(task.name)}
         />
@@ -106,106 +175,106 @@ const TaskBox = ({ task, filter, isSelected, onClick, onRemove }) => (
   </div>
 );
 
-const TableView = ({ selectedTasks, onQuantityChange, onRemoveTask, calculateTotal, vehicleNumber }) => (
-    <div className="table-view-wrapper">
-      <div className="table-view-info">
-        <span className="vehicle-number">Vehicle No: {vehicleNumber || 'Not specified'}</span>
-        <span className="vehicle-date">Date: {new Date().toLocaleDateString()}</span>
-      </div>
-      <table className="tasks-table">
-        <thead>
-          <tr>
-            <th>Task Name</th>
-            <th>Quantity</th>
-            <th>Unit</th>
-            <th>Subtotal</th>
-            <th>Notes</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {selectedTasks.map((task, index) => (
-            <tr key={task.name + index}>
-              <td>{task.name}</td>
-              <td>
-                <input
-                  type="number"
-                  min="1"
-                  value={task.quantity}
-                  onChange={(e) => onQuantityChange(task.name, e.target.value)}
-                  className="quantity-input"
-                />
-              </td>
-              <td>{task.unit.charAt(0).toUpperCase() + task.unit.slice(1)}</td>
-              <td>${(task.price * task.quantity).toFixed(2)}</td>
-              <td>{task.remarks || '-'}</td>
-              <td>
-                <button className="remove-btn" onClick={() => onRemoveTask(task.name)}>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-        <tfoot>
-          <tr>
-            <td colSpan="3">Total:</td>
-            <td colSpan="3">${calculateTotal()}</td>
-          </tr>
-        </tfoot>
-      </table>
+const TableView = ({ serviceTasks, onQuantityChange, onRemoveTask, calculateTotal, vehicleNumber }) => (
+  <div className="table-view-wrapper">
+    <div className="table-view-info">
+      <span className="vehicle-number">Vehicle No: {vehicleNumber || 'Not specified'}</span>
+      <span className="vehicle-date">Date: {new Date().toLocaleDateString()}</span>
     </div>
-  );
-
-const Sidebar = ({ vehicleNumber, selectedTasks, onVehicleChange, onRemoveTask, onQuantityChange, onRemarksChange, calculateTotal, spareParts, calculateSparePartsTotal }) => (
-    <div className="sidebar">
-      <div className="sidebar-header">
-        <div className="vehicle-input">
-          <label htmlFor="vehicle-number">Vehicle No:</label>
-          <input
-            type="text"
-            id="vehicle-number"
-            placeholder="Enter vehicle number"
-            value={vehicleNumber}
-            onChange={(e) => onVehicleChange(e.target.value)}
-            className="quantity-input"
-          />
-        </div>
-        <div className="header-row">
-          <div className="labels-totals-container">
-            <div className="label-total-pair">
-              <h3>Workmanship</h3>
-              <div className="total-item"><span className="top-total-amount">${calculateTotal()}</span></div>
-            </div>
-            {spareParts.length > 0 && (
-              <div className="label-total-pair">
-                <span className="subtotal-label">Spare Parts Subtotal</span>
-                <div className="total-item"><span className="spare-parts-subtotal">${calculateSparePartsTotal()}</span></div>
-              </div>
-            )}
-          </div>
-          <div className="final-total-container">
-            <div className="total-item total-final">
-              Total: <span className="top-total-amount" style={{ marginLeft: 'auto', display: 'block' }}>${(parseFloat(calculateTotal()) + parseFloat(calculateSparePartsTotal() || 0)).toFixed(2)}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="task-list">
-        {selectedTasks.map((task, index) => (
-          <SelectedTaskItem
-            key={task.name + index}
-            task={task}
-            onQuantityChange={(newQuantity) => onQuantityChange(task.name, newQuantity)}
-            onRemarksChange={(newRemarks) => onRemarksChange(task.name, newRemarks)}
-            onRemove={() => onRemoveTask(task.name)}
-          />
+    <table className="tasks-table">
+      <thead>
+        <tr>
+          <th>Task Name</th>
+          <th>Quantity</th>
+          <th>Unit</th>
+          <th>Subtotal</th>
+          <th>Notes</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {serviceTasks.map((task, index) => (
+          <tr key={task.name + index}>
+            <td>{task.name}</td>
+            <td>
+              <input
+                type="number"
+                min="1"
+                value={task.quantity}
+                onChange={(e) => onQuantityChange(task.name, e.target.value)}
+                className="quantity-input"
+              />
+            </td>
+            <td>{task.unit.charAt(0).toUpperCase() + task.unit.slice(1)}</td>
+            <td>${(task.price * task.quantity).toFixed(2)}</td>
+            <td>{task.remarks || '-'}</td>
+            <td>
+              <button className="remove-btn" onClick={() => onRemoveTask(task.name)}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </td>
+          </tr>
         ))}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colSpan="3">Total:</td>
+          <td colSpan="3">${calculateTotal()}</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+);
+
+const Sidebar = ({ vehicleNumber, serviceTasks, onVehicleChange, onRemoveTask, onQuantityChange, onRemarksChange, calculateTotal, spareParts, calculateSparePartsTotal }) => (
+  <div className="sidebar">
+    <div className="sidebar-header">
+      <div className="vehicle-input">
+        <label htmlFor="vehicle-number">Vehicle No:</label>
+        <input
+          type="text"
+          id="vehicle-number"
+          placeholder="Enter vehicle number"
+          value={vehicleNumber}
+          onChange={(e) => onVehicleChange(e.target.value)}
+          className="quantity-input"
+        />
+      </div>
+      <div className="header-row">
+        <div className="labels-totals-container">
+          <div className="label-total-pair">
+            <h3>Workmanship</h3>
+            <div className="total-item"><span className="top-total-amount">${calculateTotal()}</span></div>
+          </div>
+          {spareParts.length > 0 && (
+            <div className="label-total-pair">
+              <span className="subtotal-label">Spare Parts Subtotal</span>
+              <div className="total-item"><span className="spare-parts-subtotal">${calculateSparePartsTotal()}</span></div>
+            </div>
+          )}
+        </div>
+        <div className="final-total-container">
+          <div className="total-item total-final">
+            Total: <span className="top-total-amount" style={{ marginLeft: 'auto', display: 'block' }}>${(parseFloat(calculateTotal()) + parseFloat(calculateSparePartsTotal() || 0)).toFixed(2)}</span>
+          </div>
+        </div>
       </div>
     </div>
-  );
+    <div className="task-list">
+      {serviceTasks.map((task, index) => (
+        <SelectedTaskItem
+          key={task.name + index}
+          task={task}
+          onQuantityChange={(newQuantity) => onQuantityChange(task.name, newQuantity)}
+          onRemarksChange={(newRemarks) => onRemarksChange(task.name, newRemarks)}
+          onRemove={() => onRemoveTask(task.name)}
+        />
+      ))}
+    </div>
+  </div>
+);
 
 const SelectedTaskItem = ({ task, onQuantityChange, onRemarksChange, onRemove }) => (
   <div className="selected-task-item">
@@ -239,55 +308,71 @@ const SelectedTaskItem = ({ task, onQuantityChange, onRemarksChange, onRemove })
 );
 
 const SparePart = ({ addSparePart }) => {
-    const [sparePartName, setSparePartName] = useState('');
-    const [sparePartQuantity, setSparePartQuantity] = useState(1);
-    const unitPrice = 10.00;
-  
-    const handleAddSparePart = () => {
-      if (sparePartName.trim()) {
-        addSparePart({ name: sparePartName, quantity: sparePartQuantity, unitPrice });
-        setSparePartName('');
-        setSparePartQuantity(1);
-      }
-    };
-  
-    return (
-      <div className="spare-parts-section">
-        <div className="spare-parts-inputs">
-          <div className="spare-parts-label-container">
-            <span className="spare-parts-label">Spare Parts</span>
-          </div>
-          <div className="spare-parts-inputs-container">
-            <input
-              type="text"
-              value={sparePartName}
-              onChange={(e) => setSparePartName(e.target.value)}
-              placeholder="Spare part name (autocomplete soon)"
-              className="quantity-input"
-            />
-            <input
-              type="number"
-              min="1"
-              value={sparePartQuantity}
-              onChange={(e) => setSparePartQuantity(parseInt(e.target.value) || 1)}
-              className="quantity-input"
-            />
-            <input
-              type="text"
-              value={`$${unitPrice.toFixed(2)}`}
-              readOnly
-              className="quantity-input"
-            />
-            <button className="button-primary" onClick={handleAddSparePart}>
-              Add
-            </button>
-          </div>
-        </div>
-      </div>
-    );
+  const [sparePartName, setSparePartName] = useState('');
+  const [sparePartQuantity, setSparePartQuantity] = useState(1);
+  const unitPrice = 10.00;
+
+  const handleAddSparePart = () => {
+    if (sparePartName.trim()) {
+      addSparePart({ name: sparePartName, quantity: sparePartQuantity, unitPrice });
+      setSparePartName('');
+      setSparePartQuantity(1);
+    }
   };
 
-  const SparePartsTable = ({ spareParts, removeSparePart, calculateSparePartsTotal }) => (
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleAddSparePart();
+    }
+  };
+
+  return (
+    <div className="spare-parts-section">
+      <div className="spare-parts-inputs">
+        <div className="spare-parts-label-container">
+          <span className="spare-parts-label">Spare Parts</span>
+        </div>
+        <div className="spare-parts-inputs-container">
+          <input
+            type="text"
+            value={sparePartName}
+            onChange={(e) => setSparePartName(e.target.value)}
+            onKeyPress={handleKeyPress}
+            placeholder="Spare part name (autocomplete soon)"
+            className="quantity-input"
+          />
+          <input
+            type="number"
+            min="1"
+            value={sparePartQuantity}
+            onChange={(e) => setSparePartQuantity(parseInt(e.target.value) || 1)}
+            onKeyPress={handleKeyPress}
+            className="quantity-input"
+          />
+          <input
+            type="text"
+            value={`$${unitPrice.toFixed(2)}`}
+            readOnly
+            className="quantity-input"
+          />
+          <button className="button-primary" onClick={handleAddSparePart}>
+            Add
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const SparePartsTable = ({ spareParts, removeSparePart, calculateSparePartsTotal, setSpareParts }) => {
+  const handleQuantityChange = (index, value) => {
+    const updatedSpareParts = spareParts.map((spare, i) =>
+      i === index ? { ...spare, quantity: parseInt(value) || 1 } : spare
+    );
+    setSpareParts(updatedSpareParts);
+  };
+
+  return (
     <div className="spare-parts-table-section">
       <table className="spare-parts-table">
         <thead>
@@ -296,6 +381,7 @@ const SparePart = ({ addSparePart }) => {
             <th>Name</th>
             <th>Quantity</th>
             <th>Unit Price</th>
+            <th>Subtotal</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -304,8 +390,18 @@ const SparePart = ({ addSparePart }) => {
             <tr key={index}>
               <td>{index + 1}</td>
               <td>{spare.name}</td>
-              <td>{spare.quantity}</td>
+              <td>
+                <input
+                  type="number"
+                  min="1"
+                  value={spare.quantity}
+                  onChange={(e) => handleQuantityChange(index, e.target.value)}
+                  className="quantity-input"
+                  style={{ width: '100%' }}
+                />
+              </td>
               <td>${spare.unitPrice.toFixed(2)}</td>
+              <td>${(spare.unitPrice * spare.quantity).toFixed(2)}</td>
               <td>
                 <button className="remove-btn" onClick={() => removeSparePart(spare.name)}>
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -318,277 +414,293 @@ const SparePart = ({ addSparePart }) => {
         </tbody>
         <tfoot>
           <tr>
-            <td colSpan="1">Total:</td> {/* Moved to "No." column */}
-            <td></td> {/* Empty "Name" column */}
-            <td></td> {/* Empty "Quantity" column */}
-            <td>${calculateSparePartsTotal()}</td> {/* Moved to "Unit Price" column */}
-            <td></td> {/* Empty "Actions" column */}
+            <td colSpan="1">Total:</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>${calculateSparePartsTotal()}</td>
+            <td></td>
           </tr>
         </tfoot>
       </table>
     </div>
   );
+};
 
-  const ServiceEntry = ({ onSave, onBack }) => {
-    const { filter, selectedTasks, spareParts, vehicleNumber, categoryBadges, setFilter, setSelectedTasks, setActiveView, handleTaskClick, handleRemoveTask, calculateTotal, setVehicleNumber, calculateSparePartsTotal } = useContext(ServiceContext);
-  
-    const handleQuantityChange = (taskName, newQuantity) => {
-      const quantity = parseInt(newQuantity) || 1;
-      setSelectedTasks(selectedTasks.map(task =>
-        task.name === taskName ? { ...task, quantity } : task
-      ));
-    };
-  
-    const handleRemarksChange = (taskName, newRemarks) => {
-      setSelectedTasks(selectedTasks.map(task =>
-        task.name === taskName ? { ...task, remarks: newRemarks } : task
-      ));
-    };
-  
-    const handleSave = () => {
-      onSave({ vehicleNumber, selectedTasks });
-      onBack();
-    };
-  
-    return (
-      <div className="app-container">
-        <div className="service-entry-header">
-          <div className="filter-section">
-            {getTaskTypes().map(type => (
-              <button
-                key={type}
-                className={`filter-btn ${filter === type ? 'active' : ''}`}
-                onClick={() => setFilter(type)}
-              >
-                {type.charAt(0).toUpperCase() + type.slice(1)} Tasks
-              </button>
-            ))}
-          </div>
-          <div className="service-entry-actions">
-            <button className="button-primary" onClick={() => setActiveView('hub')}>
-              Parts Hub
-            </button>
-            <button className="button-secondary" onClick={handleSave}>
-              Save & Back
-            </button>
-          </div>
-        </div>
-        <div className="main-content">
-          <div className="categories">
-            {Object.entries(tasksData).map(([part, tasks]) => (
-              <Category
-                key={part}
-                part={part}
-                filter={filter}
-                selectedTasks={selectedTasks}
-                onTaskClick={handleTaskClick}
-                onRemoveTask={handleRemoveTask}
-                categoryBadges={categoryBadges}
-              />
-            ))}
-          </div>
-          <Sidebar
-            vehicleNumber={vehicleNumber}
-            selectedTasks={selectedTasks}
-            onVehicleChange={setVehicleNumber}
-            onRemoveTask={handleRemoveTask}
-            onQuantityChange={handleQuantityChange}
-            onRemarksChange={handleRemarksChange}
-            calculateTotal={calculateTotal}
-            spareParts={spareParts}
-            calculateSparePartsTotal={calculateSparePartsTotal}
-          />
-        </div>
-      </div>
-    );
+const ServiceEntry = ({ onSave, onBack }) => {
+  const { filter, serviceTasks, spareParts, vehicleNumber, categoryBadges, setFilter, setActiveView, handleTaskClick, handleRemoveTask, calculateTotal, setVehicleNumber, calculateSparePartsTotal, setServiceTasks, workshopService } = useContext(ServiceContext);
+
+  const handleQuantityChange = (taskName, newQuantity) => {
+    const quantity = parseInt(newQuantity) || 1;
+    setServiceTasks(serviceTasks.map(task =>
+      task.name === taskName ? { ...task, quantity } : task
+    ));
   };
 
-  const PartsHub = ({ onBack }) => {
-    const { selectedTasks, vehicleNumber, setActiveView, handleQuantityChange, handleRemoveTask, calculateTotal, spareParts, addSparePart, removeSparePart, calculateSparePartsTotal } = useContext(ServiceContext);
-  
-    return (
-      <div className="app-container">
-        <div className="service-entry-header">
-          <div className="filter-section">
-            {/* Placeholder for filter buttons to maintain layout consistency, but no functionality here */}
-            {getTaskTypes().map(type => (
-              <button
-                key={type}
-                className={`filter-btn ${false ? 'active' : ''}`} /* No active state or click handlers */
-                disabled
-              >
-                {type.charAt(0).toUpperCase() + type.slice(1)} Tasks
-              </button>
-            ))}
-          </div>
-          <div className="service-entry-actions">
-            <button className="button-primary" onClick={() => setActiveView('entry')}>
-              Workmanship Panel
-            </button>
-            <button className="button-secondary" onClick={onBack}>
-              Save & Back
-            </button>
-          </div>
-        </div>
-        <div className="parts-hub-layout">
-          <div className="table-view-wrapper">
-            <TableView
-              selectedTasks={selectedTasks}
-              onQuantityChange={handleQuantityChange}
-              onRemoveTask={handleRemoveTask}
-              calculateTotal={calculateTotal}
-              vehicleNumber={vehicleNumber}
-            />
-          </div>
-          <div className="spare-parts-wrapper">
-            <div className="spare-parts-input-area">
-              <SparePart addSparePart={addSparePart} />
-            </div>
-            <SparePartsTable spareParts={spareParts} removeSparePart={removeSparePart} calculateSparePartsTotal={calculateSparePartsTotal} />
-          </div>
-        </div>
-      </div>
-    );
+  const handleRemarksChange = (taskName, newRemarks) => {
+    setServiceTasks(serviceTasks.map(task =>
+      task.name === taskName ? { ...task, remarks: newRemarks } : task
+    ));
   };
 
-const ServiceHub = ({ service, onSave, onBack }) => {
-    const initialState = {
-      selectedTasks: service.selectedTasks || [],
-      vehicleNumber: service.vehicleNumber || '',
-      filter: 'all',
-      categoryBadges: initializeCategoryBadges(tasksData, service.selectedTasks || []),
-      activeView: 'entry',
-      spareParts: service.spareParts || [],
-    };
-  
-    const [state, dispatch] = useReducer((state, action) => {
-      switch (action.type) {
-        case 'SET_SELECTED_TASKS':
-          return { ...state, selectedTasks: action.payload };
-        case 'SET_VEHICLE_NUMBER':
-          return { ...state, vehicleNumber: action.payload };
-        case 'SET_FILTER':
-          return { ...state, filter: action.payload };
-        case 'SET_CATEGORY_BADGES':
-          return { ...state, categoryBadges: action.payload };
-        case 'SET_ACTIVE_VIEW':
-          return { ...state, activeView: action.payload };
-        case 'SET_SPARE_PARTS':
-          return { ...state, spareParts: action.payload };
-        case 'ADD_SPARE_PART':
-          return { ...state, spareParts: [...state.spareParts, action.payload] };
-        case 'REMOVE_SPARE_PART':
-          return { ...state, spareParts: state.spareParts.filter(sp => sp.name !== action.payload) };
-        default:
-          return state;
-      }
-    }, initialState);
-  
-    const { selectedTasks, vehicleNumber, filter, categoryBadges, activeView, spareParts } = state;
-  
-    useEffect(() => {
-      dispatch({ type: 'SET_CATEGORY_BADGES', payload: initializeCategoryBadges(tasksData, selectedTasks) });
-    }, [selectedTasks]);
-  
-    const setSelectedTasks = (tasks) => dispatch({ type: 'SET_SELECTED_TASKS', payload: tasks });
-    const setVehicleNumber = (number) => dispatch({ type: 'SET_VEHICLE_NUMBER', payload: number });
-    const setFilter = (newFilter) => dispatch({ type: 'SET_FILTER', payload: newFilter });
-    const setActiveView = (view) => dispatch({ type: 'SET_ACTIVE_VIEW', payload: view });
-    const setSpareParts = (parts) => dispatch({ type: 'SET_SPARE_PARTS', payload: parts });
-    const addSparePart = (part) => dispatch({ type: 'ADD_SPARE_PART', payload: part });
-    const removeSparePart = (name) => dispatch({ type: 'REMOVE_SPARE_PART', payload: name });
-    const handleTaskClick = (task) => {
-      if (!selectedTasks.some(t => t.name === task.name)) {
-        setSelectedTasks([...selectedTasks, { ...task, quantity: 1, remarks: '' }]);
-        updateCategoryBadges(task.part, 1);
-      }
-    };
-    const handleRemoveTask = (taskName) => {
-      setSelectedTasks(selectedTasks.filter(task => task.name !== taskName));
-      updateCategoryBadges(getTaskPart(taskName), -1);
-    };
-    const handleQuantityChange = (taskName, newQuantity) => {
-      const quantity = parseInt(newQuantity) || 1;
-      setSelectedTasks(selectedTasks.map(task =>
-        task.name === taskName ? { ...task, quantity } : task
-      ));
-    };
-    const handleRemarksChange = (taskName, newRemarks) => {
-      setSelectedTasks(selectedTasks.map(task =>
-        task.name === taskName ? { ...task, remarks: newRemarks } : task
-      ));
-    };
-    const updateCategoryBadges = (part, change) => {
-      dispatch({ type: 'SET_CATEGORY_BADGES', payload: {
-        ...categoryBadges,
-        [part]: Math.max(0, (categoryBadges[part] || 0) + change),
-      } });
-    };
-    const getTaskPart = (taskName) => {
-      for (const part in tasksData) {
-        if (tasksData[part].some(task => task.name === taskName)) return part;
-      }
-      return null;
-    };
-    const calculateTotal = () => selectedTasks.reduce((sum, task) => sum + task.price * task.quantity, 0).toFixed(2);
-    const calculateSparePartsTotal = () => spareParts.reduce((sum, sp) => sum + sp.unitPrice * sp.quantity, 0).toFixed(2);
-  
-    const contextValue = {
-      selectedTasks, vehicleNumber, filter, categoryBadges, spareParts,
-      setSelectedTasks, setVehicleNumber, setFilter, setActiveView, handleTaskClick,
-      handleRemoveTask, handleQuantityChange, handleRemarksChange, calculateTotal,
-      setSpareParts, addSparePart, removeSparePart, calculateSparePartsTotal,
-    };
-  
-    return (
-      <ServiceContext.Provider value={contextValue}>
-        {activeView === 'entry' ? (
-          <ServiceEntry onSave={() => onSave({ ...service, vehicleNumber, selectedTasks, spareParts })} onBack={onBack} />
-        ) : (
-          <PartsHub onBack={onBack} />
-        )}
-      </ServiceContext.Provider>
-    );
+  const handleSaveAndBack = () => {
+    onSave(workshopService.toJson());
+    onBack();
   };
 
-  const ServiceList = ({ services, onEdit, onAdd }) => (
+  return (
     <div className="app-container">
-      <button className="service-list-add-button" onClick={onAdd}>
-        Add New
-      </button>
-      <h2 className="service-list-title">Workshop Services</h2>
-      <table className="tasks-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Vehicle No</th>
-            <th>Tasks</th>
-            <th>Spare Parts</th>
-            <th>Total</th>
-            <th>Created Date</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {services.map(service => (
-            <tr key={service.id}>
-              <td>{service.id}</td>
-              <td>{service.vehicleNumber || 'Not specified'}</td>
-              <td>${service.selectedTasks.reduce((sum, task) => sum + (task.price * (task.quantity || 1)), 0).toFixed(2)}</td>
-              <td>${service.spareParts.reduce((sum, part) => sum + (part.unitPrice * part.quantity), 0).toFixed(2)}</td>
-              <td>${(service.selectedTasks.reduce((sum, task) => sum + (task.price * (task.quantity || 1)), 0) + service.spareParts.reduce((sum, part) => sum + (part.unitPrice * part.quantity), 0)).toFixed(2)}</td>
-              <td>{new Date(service.createdDate).toLocaleDateString()}</td>
-              <td>
-                <button className="service-list-edit-button" onClick={() => onEdit(service.id)}>
-                  Edit
-                </button>
-              </td>
-            </tr>
+      <div className="service-entry-header">
+        <div className="filter-section">
+          {getTaskTypes().map(type => (
+            <button
+              key={type}
+              className={`filter-btn ${filter === type ? 'active' : ''}`}
+              onClick={() => setFilter(type)}
+            >
+              {type.charAt(0).toUpperCase() + type.slice(1)} Tasks
+            </button>
           ))}
-        </tbody>
-      </table>
+        </div>
+        <div className="service-entry-actions">
+          <button className="button-primary" onClick={() => setActiveView('hub')}>
+            Parts Hub
+          </button>
+          <button className="button-secondary" onClick={handleSaveAndBack}>
+            Save & Back
+          </button>
+        </div>
+      </div>
+      <div className="main-content">
+        <div className="categories">
+          {Object.entries(tasksData).map(([part, tasks]) => (
+            <Category
+              key={part}
+              part={part}
+              filter={filter}
+              serviceTasks={serviceTasks}
+              onTaskClick={handleTaskClick}
+              onRemoveTask={handleRemoveTask}
+              categoryBadges={categoryBadges}
+            />
+          ))}
+        </div>
+        <Sidebar
+          vehicleNumber={vehicleNumber}
+          serviceTasks={serviceTasks}
+          onVehicleChange={setVehicleNumber}
+          onRemoveTask={handleRemoveTask}
+          onQuantityChange={handleQuantityChange}
+          onRemarksChange={handleRemarksChange}
+          calculateTotal={calculateTotal}
+          spareParts={spareParts}
+          calculateSparePartsTotal={calculateSparePartsTotal}
+        />
+      </div>
     </div>
   );
+};
+
+const PartsHub = ({ onSave, onBack }) => {
+  const { serviceTasks, vehicleNumber, setActiveView, handleQuantityChange, handleRemoveTask, calculateTotal, spareParts, addSparePart, removeSparePart, calculateSparePartsTotal, workshopService, setSpareParts } = useContext(ServiceContext);
+
+  const handleSaveAndBack = () => {
+    onSave(workshopService.toJson());
+    onBack();
+  };
+
+  return (
+    <div className="app-container">
+      <div className="service-entry-header">
+        <div className="filter-section">
+          {getTaskTypes().map(type => (
+            <button key={type} className={`filter-btn ${false ? 'active' : ''}`} disabled>
+              {type.charAt(0).toUpperCase() + type.slice(1)} Tasks
+            </button>
+          ))}
+        </div>
+        <div className="service-entry-actions">
+          <button className="button-primary" onClick={() => setActiveView('entry')}>
+            Workmanship Panel
+          </button>
+          <button className="button-secondary" onClick={handleSaveAndBack}>
+            Save & Back
+          </button>
+        </div>
+      </div>
+      <div className="parts-hub-layout">
+        <div className="table-view-wrapper">
+          <TableView
+            serviceTasks={serviceTasks}
+            onQuantityChange={handleQuantityChange}
+            onRemoveTask={handleRemoveTask}
+            calculateTotal={calculateTotal}
+            vehicleNumber={vehicleNumber}
+          />
+        </div>
+        <div className="spare-parts-wrapper">
+          <div className="spare-parts-input-area">
+            <SparePart addSparePart={addSparePart} />
+          </div>
+          <SparePartsTable spareParts={spareParts} removeSparePart={removeSparePart} calculateSparePartsTotal={calculateSparePartsTotal} setSpareParts={setSpareParts} />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const ServiceHub = ({ service, onSave, onBack }) => {
+  const initialState = {
+    workshopService: WorkshopService.fromJson(JSON.stringify(service)),
+    filter: 'all',
+    categoryBadges: initializeCategoryBadges(tasksData, service.serviceTasks || []),
+    activeView: 'entry',
+  };
+
+  const [state, dispatch] = useReducer((state, action) => {
+    switch (action.type) {
+      case 'SET_WORKSHOP_SERVICE':
+        return { ...state, workshopService: action.payload };
+      case 'SET_VEHICLE_NUMBER':
+        return { ...state, workshopService: state.workshopService.setVehicleNumber(action.payload) };
+      case 'SET_SERVICE_TASKS':
+        return { ...state, workshopService: state.workshopService.setServiceTasks(action.payload) };
+      case 'SET_SPARE_PARTS':
+        return { ...state, workshopService: state.workshopService.setSpareParts(action.payload) };
+      case 'SET_FILTER':
+        return { ...state, filter: action.payload };
+      case 'SET_CATEGORY_BADGES':
+        return { ...state, categoryBadges: action.payload };
+      case 'SET_ACTIVE_VIEW':
+        return { ...state, activeView: action.payload };
+      default:
+        return state;
+    }
+  }, initialState);
+
+  const { workshopService, filter, categoryBadges, activeView } = state;
+
+  useEffect(() => {
+    dispatch({
+      type: 'SET_CATEGORY_BADGES',
+      payload: initializeCategoryBadges(tasksData, workshopService.serviceTasks),
+    });
+  }, [workshopService.serviceTasks]);
+
+  const setFilter = (newFilter) => dispatch({ type: 'SET_FILTER', payload: newFilter });
+  const setActiveView = (view) => dispatch({ type: 'SET_ACTIVE_VIEW', payload: view });
+  const handleTaskClick = (task) => {
+    if (!workshopService.serviceTasks.some(t => t.name === task.name)) {
+      const newService = workshopService.addTask(task);
+      dispatch({ type: 'SET_WORKSHOP_SERVICE', payload: newService });
+    }
+  };
+  const handleRemoveTask = (taskName) => {
+    const newService = workshopService.removeTask(taskName);
+    dispatch({ type: 'SET_WORKSHOP_SERVICE', payload: newService });
+  };
+  const handleQuantityChange = (taskName, newQuantity) => {
+    const quantity = parseInt(newQuantity) || 1;
+    const newTasks = workshopService.serviceTasks.map(task =>
+      task.name === taskName ? { ...task, quantity } : task
+    );
+    dispatch({ type: 'SET_SERVICE_TASKS', payload: newTasks });
+  };
+  const handleRemarksChange = (taskName, newRemarks) => {
+    const newTasks = workshopService.serviceTasks.map(task =>
+      task.name === taskName ? { ...task, remarks: newRemarks } : task
+    );
+    dispatch({ type: 'SET_SERVICE_TASKS', payload: newTasks });
+  };
+  const addSparePart = (part) => {
+    const newService = workshopService.addSparePart(part);
+    dispatch({ type: 'SET_WORKSHOP_SERVICE', payload: newService });
+  };
+  const removeSparePart = (name) => {
+    const newService = workshopService.removeSparePart(name);
+    dispatch({ type: 'SET_WORKSHOP_SERVICE', payload: newService });
+  };
+  const setServiceTasks = (tasks) => {
+    dispatch({ type: 'SET_SERVICE_TASKS', payload: tasks });
+  };
+  const setSpareParts = (parts) => {
+    dispatch({ type: 'SET_SPARE_PARTS', payload: parts });
+  };
+
+  const contextValue = {
+    workshopService,
+    serviceTasks: workshopService.serviceTasks,
+    vehicleNumber: workshopService.vehicleNumber,
+    filter,
+    categoryBadges,
+    spareParts: workshopService.spareParts,
+    setServiceTasks,
+    setVehicleNumber: (number) => {
+      const newService = workshopService.setVehicleNumber(number);
+      dispatch({ type: 'SET_WORKSHOP_SERVICE', payload: newService });
+    },
+    setFilter,
+    setActiveView,
+    handleTaskClick,
+    handleRemoveTask,
+    handleQuantityChange,
+    handleRemarksChange,
+    calculateTotal: () => workshopService.calculateTotal(),
+    setSpareParts,
+    addSparePart,
+    removeSparePart,
+    calculateSparePartsTotal: () => workshopService.calculateSparePartsTotal(),
+  };
+
+  return (
+    <ServiceContext.Provider value={contextValue}>
+      {activeView === 'entry' ? (
+        <ServiceEntry onSave={onSave} onBack={onBack} />
+      ) : (
+        <PartsHub onSave={onSave} onBack={onBack} />
+      )}
+    </ServiceContext.Provider>
+  );
+};
+
+const ServiceList = ({ services, onEdit, onAdd }) => (
+  <div className="app-container">
+    <button className="service-list-add-button" onClick={onAdd}>
+      Add New
+    </button>
+    <h2 className="service-list-title">Workshop Services</h2>
+    <table className="tasks-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Vehicle No</th>
+          <th>Tasks</th>
+          <th>Spare Parts</th>
+          <th>Total</th>
+          <th>Created Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {services.map(service => (
+          <tr key={service.id}>
+            <td>{service.id}</td>
+            <td>{service.vehicleNumber || 'Not specified'}</td>
+            <td>${service.calculateTotal()}</td>
+            <td>${service.calculateSparePartsTotal()}</td>
+            <td>${(parseFloat(service.calculateTotal()) + parseFloat(service.calculateSparePartsTotal())).toFixed(2)}</td>
+            <td>{new Date(service.createdDate).toLocaleDateString()}</td>
+            <td>
+              <button className="service-list-edit-button" onClick={() => onEdit(service.id)}>
+                Edit
+              </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+);
 
 const App = () => {
   const [services, setServices] = useState([]);
@@ -596,13 +708,7 @@ const App = () => {
   const [currentServiceId, setCurrentServiceId] = useState(null);
 
   const handleAddService = () => {
-    const newService = {
-      id: Date.now(),
-      vehicleNumber: '',
-      selectedTasks: [],
-      createdDate: new Date().toISOString(),
-      spareParts: [],
-    };
+    const newService = WorkshopService.fromJson('{}');
     setServices([...services, newService]);
     setCurrentServiceId(newService.id);
     setViewMode('entry');
@@ -613,7 +719,8 @@ const App = () => {
     setViewMode('entry');
   };
 
-  const handleSaveService = (updatedService) => {
+  const handleSaveService = (updatedServiceJson) => {
+    const updatedService = WorkshopService.fromJson(JSON.stringify(updatedServiceJson));
     setServices(services.map(s => (s.id === updatedService.id ? updatedService : s)));
     setViewMode('list');
     setCurrentServiceId(null);
